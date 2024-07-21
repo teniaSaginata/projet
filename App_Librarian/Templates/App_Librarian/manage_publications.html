@@ -1,0 +1,84 @@
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+
+{% block title %}Manage Publications - Library Management System{% endblock %}
+
+{% block content %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover; width: 100%; height: 100vh;">
+    <div class="container">
+        <h3 style="text-align: center;padding-top: 50px;">Manage Publications</h3>
+          <div style="text-align: right; margin-bottom: 10px;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPublicationModal">
+                Add Publication
+            </button>
+        </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Publication Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for publication in publications %}
+            <tr>
+                <td>{{ publication.publication_id }}</td>
+                <td>{{ publication.publication_name }}</td>
+                <td>
+                    <a href="{% url 'delete_publication' publication.publication_id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    </div>
+</div>
+
+<!-- Add Publication Modal -->
+<div class="modal fade" id="addPublicationModal" tabindex="-1" aria-labelledby="addPublicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPublicationModalLabel">Add Publication</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPublicationForm" method="POST" action="{% url 'add_publication' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="publicationName" class="form-label">Publication Name</label>
+                        <input type="text" class="form-control" id="publicationName" name="publication_name" required>
+                        <div id="publicationNameError" class="invalid-feedback"></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const publicationNameInput = document.getElementById("publicationName");
+        const publicationNameError = document.getElementById("publicationNameError");
+
+        publicationNameInput.addEventListener("input", function() {
+            const publicationName = publicationNameInput.value.trim();
+            if (!/^[A-Za-z]+$/.test(publicationName)) {
+                publicationNameError.textContent = "Only alphabetic characters are allowed";
+                publicationNameInput.classList.add("is-invalid");
+            } else {
+                publicationNameError.textContent = "";
+                publicationNameInput.classList.remove("is-invalid");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'App_Member/base.html' %}
+{% load static %}
+
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+    <div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover; width: 100%; height: 100vh;">
+        <div class="container">
+            <h1 class="mt-5 mb-4" style="text-align:center;">Book Details</h1>
+            <div class="row">
+                <div class="card mb-4">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Image">
+        </div>
+   <div class="col-md-8">
+    <div class="card-body">
+        <h5 class="card-title">{{ book.title }}</h5>
+        <p class="card-text">Author: {{ book.authors }}</p>
+        <p class="card-text">Genre: {{ book.genre }}</p>
+        <p class="card-text">Publication Year: {{ book.publication_year }}</p>
+        <p class="card-text">Publisher: {{ book.publisher }}</p>
+        <p class="card-text">Description: {{ book.description }}</p>
+        <p class="card-text">Quantity Available: {{ book.quantity }}</p>
+        <!-- Add the cover image -->
+      
+        
+        <!-- Buttons -->
+        <div class="text-center mt-6">
+            <button type="button" class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#loanModal">Borrow Book</button>
+            <button type="button" class="btn btn-secondary" onclick="showPDFPreview('{{ book.pdf_file.url }}')">PDF Preview (First 2 Pages)</button>
+
+            {% if not in_wishlist %}
+        <form action="{% url 'add_to_wishlist' book.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Add to Wishlist</button>
+        </form>
+    {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <!-- Loan Modal -->
+    <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loanModalLabel">Select Loan Period</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Loan period selection form -->
+                    <form id="loanForm" action="{% url 'loan_request' %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" name="book_id" value="{{ book.id }}">
+                        <div class="mb-3">
+                            <label for="loanPeriod" class="form-label">Loan Period</label>
+                            <select class="form-select" id="loanPeriod" name="loan_period" required>
+                                <option value="">Select loan period</option>
+                                <!-- Add loan period options dynamically if needed -->
+                                <option value="7">7 days</option>
+                                <option value="14">14 days</option>
+                                <option value="30">30 days</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="submitLoan" class="btn btn-primary">Submit</button>
+                </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPDFPreview(pdfURL) {
+            // Open the PDF in a new window or tab
+            window.open(pdfURL + '#page=1-2', '_blank');
+        }
+    </script>
+{% endblock %}

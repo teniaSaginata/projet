@@ -1,0 +1,68 @@
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags %}
+            <script>alert("{{ message }}")</script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 100vh;">
+    <h1 style="text-align:center;">Manage Users</h1>
+    <div class="container" style="width:50%;height:500px">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.Name }}</td>
+                    <td>{{ user.Email }}</td>
+                    <td>{{ user.Phone }}</td>
+                    <td>
+                        <a href="{% url 'edit_user' user.id %}" class="btn btn-primary">View User Details</a>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deactivateModal{{ user.id }}">Deactivate</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% for user in users %}
+    <!-- Deactivate Account Modal -->
+    <div class="modal fade" id="deactivateModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="deactivateModalLabel{{ user.id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deactivateModalLabel{{ user.id }}">Deactivate Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to deactivate the account of {{ user.Name }}?</p>
+                    <!-- Additional user information can be displayed here if needed -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{% url 'deactivate_user' user.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Deactivate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

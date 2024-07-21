@@ -1,0 +1,84 @@
+{% extends 'App_Librarian/base.html' %}
+{%load static %}
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+ {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>alert("{{ message }}")</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 100vh;">
+    <div style="padding-top: 25px;">   
+    <div class="container" style="width:50%;background-color:lightskyblue;padding-top: 50px;">
+        <h1 style="text-align:center;">Create User</h1>
+        <form method="post" enctype="multipart/form-data" class="user-form">
+            {% csrf_token %}
+             <div class="row g-3">
+                    <div class="col-md-6">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+ </div>
+  <div class="col-md-6">
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" class="form-control" required>
+            </div>
+        </div>
+    </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" class="form-control">
+            </div>
+
+
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth:</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <input type="text" id="gender" name="gender" class="form-control">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+{% endblock %}

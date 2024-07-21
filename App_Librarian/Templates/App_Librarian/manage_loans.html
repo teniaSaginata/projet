@@ -1,0 +1,50 @@
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags %}
+            <script>alert("{{ message }}")</script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 100vh;">
+  
+    <div class="container">
+        <h1 class="text-center">Loan Management</h1>
+        <table class="table table-bordered text-center">
+            <tr>
+                <th>Loan ID</th>
+                <th>User</th>
+                <th>Book</th>
+                <th>Loan Period</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.id }}</td>
+                <td>{{ loan.user.Name }}</td>
+                <td>{{ loan.book.title }}</td>
+                <td>{{ loan.loan_period }}</td>
+                <td>{{ loan.loan_status }}</td>
+                <td>
+                    {% if loan.loan_status == 'requested' %}
+                    <a href="{% url 'approve_loan' loan.id %}" class="btn btn-primary btn-sm">Approve</a>
+                    {% endif %}
+                    {% if loan.loan_status == 'issued' %}
+                    <a href="{% url 'mark_returned' loan.id %}" class="btn btn-success btn-sm">Mark Returned</a>
+                    <a href="{% url 'extend_loan' loan.id %}" class="btn btn-info btn-sm">Extend Loan</a>
+                    {% endif %}
+                    {% if loan.loan_status == 'extended' %}
+                    <a href="{% url 'mark_returned' loan.id %}" class="btn btn-success btn-sm">Mark Returned</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

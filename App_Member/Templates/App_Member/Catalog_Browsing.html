@@ -1,0 +1,89 @@
+{% extends 'App_Member/base.html' %}
+{% load static %}
+
+{% block title %}Catalog Browsing - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="container">
+    <h2 style="text-align:center;">Catalog Browsing</h2>
+    <hr style="color:red">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Browse by Category</h3>
+            <select class="form-select" onchange="location = this.value;">
+                <option selected disabled>Select Category</option>
+                {% for category in categories %}
+                    <option value="{% url 'browse_category' category.category_id %}">{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <h3>Browse by Author</h3>
+            <select class="form-select" onchange="location = this.value;">
+                <option selected disabled>Select Author</option>
+                {% for author in authors %}
+                    <option value="{% url 'browse_author' author.author_id %}">{{ author.author_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <h3>Browse by Publisher</h3>
+            <select class="form-select" onchange="location = this.value;">
+                <option selected disabled>Select Publication</option>
+                {% for publisher in publications %}
+                    <option value="{% url 'browse_publisher' publisher.publication_id %}">{{ publisher.publication_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+  <hr style="color:red">
+    <div class="row mt-6">
+        <div class="col-md-12">
+            <h2 style="text-align:center;text-underline-position: inherit;">All Books</h2>
+            <div class="row">
+                {% for book in books %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Image" style="height:250px;width:415px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">Author: {{ book.authors }}</p>
+                            <p class="card-text">Category: {{ book.genre }}</p>
+                            <p class="card-text">Publication: {{ book.publisher }}</p>
+                            <a class="btn btn-primary" href="{% url 'Book_Details' book.id %}">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+ <hr style="color:red">
+    <div class="row mt-6">
+        <div class="col-md-12">
+            <h2 style="text-align:center;text-underline-position: inherit;">Recommended Books</h2>
+            <div class="row">
+                {% for book in books %}
+                <div class="col-md-3">
+                    <div class="card mb-3">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Image" style="height:250px;width:400px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">Author: {{ book.authors }}</p>
+                            <p class="card-text">Category: {{ book.genre }}</p>
+                            <p class="card-text">Publication: {{ book.publisher }}</p>
+                            <a class="btn btn-primary" href="{% url 'Book_Details' book.id %}">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

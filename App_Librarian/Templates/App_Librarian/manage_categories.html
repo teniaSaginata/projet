@@ -1,0 +1,86 @@
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover; width: 100%; height: 100vh;">
+    <div class="container">
+        <h3 style="text-align: center;padding-top: 50px;">Manage Categories</h3>
+          <div style="text-align: right; margin-bottom: 10px;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                Add Category
+            </button>
+        </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.category_id }}</td>
+                <td>{{ category.category_name }}</td>
+                <td>
+            <a href="{% url 'delete_category' category.category_id %}" class="btn btn-danger">Delete</a>
+        </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to add category -->
+                <form id="addCategoryForm" method="POST" action="{% url 'add_category' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="category_name" required>
+                        <div id="categoryNameError" class="invalid-feedback"></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const categoryNameInput = document.getElementById("categoryName");
+        const categoryNameError = document.getElementById("categoryNameError");
+
+        categoryNameInput.addEventListener("input", function() {
+            const categoryName = categoryNameInput.value.trim();
+            if (!/^[A-Za-z]+$/.test(categoryName)) {
+                categoryNameError.textContent = "Only alphabetic characters are allowed";
+                categoryNameInput.classList.add("is-invalid");
+            } else {
+                categoryNameError.textContent = "";
+                categoryNameInput.classList.remove("is-invalid");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

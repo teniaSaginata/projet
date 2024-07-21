@@ -1,0 +1,208 @@
+{% extends 'App_Member/base.html' %}
+{% load static %}
+
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>alert("{{ message }}")</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+<style>
+    	/* Style for star rating */
+/* Style for star rating */
+.rating {
+    display: inline-block;
+    unicode-bidi: bidi-override;
+    direction: rtl;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    color: #ddd;
+    background-color: transparent;
+}
+
+.rating label:before {
+    content: "\2605"; /* Unicode character for a star */
+}
+
+.rating label:hover,
+.rating label:hover ~ label,
+.rating input:checked ~ label {
+    color: #f90; /* Color for selected stars */
+}
+
+    </style>
+    <div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 100vh;">
+        <div class="container">
+            <h1 style="text-align:center;">Loans</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Book Title</th>
+                        <th>Loan Period (days)</th>
+                        <th>Submission Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                        <!-- Add more table headers if needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in user_loans %}
+                        <tr>
+                            <td>{{ loan.id}}</td>
+                            <td>{{ loan.book.title }}</td>
+                            <td>{{ loan.loan_period }}</td>
+                            <td>{{ loan.submission_date }}</td>
+                            <td>{{ loan.loan_status }}</td>
+                            <td>
+                                {% if loan.loan_status == 'expired' %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#extendModal{{loan.id}}">
+                                        Request Extension
+                                    </button>
+                                {% endif %}
+                                {% if loan.loan_status == 'returned' %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ratingReviewModal{{ loan.book.id }}">
+                                        Rate & Review
+                                    </button>
+                                {% endif %}
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookModal{{ loan.book.id }}">
+                                    View Details
+                                </button>
+                            </td>
+                            <!-- Add more table cells for additional loan details -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    {% for loan in user_loans %}
+        <div class="modal fade" id="bookModal{{ loan.book.id }}" tabindex="-1" aria-labelledby="bookModalLabel{{ loan.book.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookModalLabel{{ loan.book.id }}">Book Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Display all book details -->
+                        <p>Title: {{ loan.book.title }}</p>
+                        <p>Authors: {{ loan.book.authors }}</p>
+                        <p>Genre: {{ loan.book.genre }}</p>
+                        <p>Language: {{ loan.book.language }}</p>
+                        <p>Publication Year: {{ loan.book.publication_year }}</p>
+                        <p>Publisher: {{ loan.book.publisher }}</p>
+                        <p>Quantity: {{ loan.book.quantity }}</p>
+                        <p>Description: {{ loan.book.description }}</p>
+                        <!-- Add more fields as needed -->
+                        <img src="{{ loan.book.cover_image.url }}" alt="Book Cover">
+                        <!-- Assuming you want to display the cover image -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extend Loan Modal -->
+        <div class="modal fade" id="extendModal{{ loan.id }}" tabindex="-1" aria-labelledby="extendModalLabel{{ loan.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="extendModalLabel{{ loan.id }}">Request Extension</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'request_extension' loan.id %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p>Your loan for "{{ loan.book.title }}" has expired. Do you want to request an extension?</p>
+                            <div class="mb-3">
+                                <input type="text" name="loan_id" id="loan_id" value="{{ loan.id }}">
+                                <label for="extension_days" class="form-label">Number of Days for Extension:</label>
+                                <input type="number" class="form-control" id="extension_days" name="extension_days" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Request Extension</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating & Review Modal -->
+      <div class="modal fade" id="ratingReviewModal{{ loan.book.id }}" tabindex="-1" aria-labelledby="ratingReviewModalLabel{{ loan.book.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingReviewModalLabel{{ loan.book.id }}">Rate & Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'rate_review_book' loan.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Your loan for "{{ loan.book.title }}" has been returned. Please rate and review the book.</p>
+                    <div class="mb-3">
+                        <fieldset class="rating">
+                            <legend>Please rate:</legend>
+                            <input type="radio" id="star5" name="rating" value="5" required><label for="star5"></label>
+                            <input type="radio" id="star4" name="rating" value="4" required><label for="star4"></label>
+                            <input type="radio" id="star3" name="rating" value="3" required><label for="star3"></label>
+                            <input type="radio" id="star2" name="rating" value="2" required><label for="star2"></label>
+                            <input type="radio" id="star1" name="rating" value="1" required><label for="star1"></label>
+                        </fieldset>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="reviewCheckbox" name="reviewCheckbox">
+                        <label class="form-check-label" for="reviewCheckbox">Write a review</label>
+                    </div>
+                    <!-- Add more fields for review if needed -->
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Review:</label>
+                        <textarea class="form-control" id="reviewText" name="reviewText" rows="4" cols="50" disabled></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    {% endfor %}
+    <script>
+    $(document).ready(function() {
+        $('#reviewCheckbox').change(function() {
+            if ($(this).is(':checked')) {
+                $('#reviewText').prop('disabled', false);
+            } else {
+                $('#reviewText').prop('disabled', true);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

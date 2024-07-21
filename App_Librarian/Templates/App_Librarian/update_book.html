@@ -1,0 +1,70 @@
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags %}
+            <script>alert("{{ message }}")</script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 800px;">
+    <div class="container" style="width: 50%;background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h1 style="text-align:center; margin-bottom: 30px;">Update Book</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ book.title }}">
+            </div>
+        <div class="form-group">
+            <label for="authors">Authors:</label>
+            <input type="text" class="form-control" id="authors" name="authors" value="{{ book.authors }}">
+        </div>
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <input type="text" class="form-control" id="genre" name="genre" value="{{ book.genre }}">
+        </div>
+        <div class="form-group">
+            <label for="language">Language:</label>
+            <input type="text" class="form-control" id="language" name="language" value="{{ book.language }}">
+        </div>
+        <div class="form-group">
+            <label for="publication_year">Publication Year:</label>
+            <input type="number" class="form-control" id="publication_year" name="publication_year" value="{{ book.publication_year }}">
+        </div>
+        <div class="form-group">
+            <label for="publisher">Publisher:</label>
+            <input type="text" class="form-control" id="publisher" name="publisher" value="{{ book.publisher }}">
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" value="{{ book.quantity }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" name="description">{{ book.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="cover_image">Cover Image:</label>
+            <input type="file" class="form-control-file" id="cover_image" name="cover_image">
+        </div>
+        <div class="form-group">
+            <label for="pdf_file">PDF File:</label>
+            <input type="file" class="form-control-file" id="pdf_file" name="pdf_file">
+        </div>
+        <div class="form-group">
+            <label for="no_of_copies_actual">No. of Copies (Actual):</label>
+            <input type="number" class="form-control" id="no_of_copies_actual" name="no_of_copies_actual" value="{{ book.no_of_copies_actual }}">
+        </div>
+        <div class="form-group">
+            <label for="no_of_copies_current">No. of Copies (Current):</label>
+            <input type="number" class="form-control" id="no_of_copies_current" name="no_of_copies_current" value="{{ book.no_of_copies_current }}">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Update Book</button>
+    </form>
+</div>
+{% endblock %}

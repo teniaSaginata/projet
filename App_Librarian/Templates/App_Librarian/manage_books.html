@@ -1,0 +1,163 @@
+<!-- Manage Book Details Page -->
+{% extends 'App_Librarian/base.html' %}
+{% load static %}
+
+{% block title %}Manage Book Details - Library Management System{% endblock %}
+
+{% block content %}
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover; width: 100%; height: 100vh;">
+    <div class="container">
+        <h3 style="text-align: center;padding-top: 50px;">Manage Book Details</h3>
+          <div style="text-align: right; margin-bottom: 10px;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookModal">
+                Add Book
+            </button>
+        </div>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Publication Year</th>
+                        <th>Language</th>
+                        <th>Category</th>
+                        <th>Publication</th>
+                        <th>No. of Copies Actual</th>
+                        <th>No. of Copies Current</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td>{{ book.book_title }}</td>
+                        <td>{{ book.publication_year }}</td>
+                        <td>{{ book.language }}</td>
+                        <td>{{ book.genre }}</td>
+                        <td>{{ book.publisher }}</td>
+                        <td>{{ book.no_of_copies_actual }}</td>
+                        <td>{{ book.no_of_copies_current }}</td>
+                        <td>
+                            <a href="{% url 'view_books' book.id %}" class="btn btn-secondary">View</a>
+                           <a href="{% url 'update_book' book.id %}" class="btn btn-primary">Edit</a>
+                           <a href="{% url 'delete_book' book.id %}" class="btn btn-danger">Delete</a>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add Book Form -->
+                <form id="addBookForm" method="POST" action="{% url 'add_book' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Book fields -->
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description" required></textarea>
+</div>
+
+                    <!-- Publication Year -->
+                    <div class="mb-3">
+                        <label for="publication_year" class="form-label">Publication Year</label>
+                        <input type="text" class="form-control" id="publication_year" name="publication_year" required>
+                    </div>
+                    <!-- Language -->
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language</label>
+                        <input type="text" class="form-control" id="language" name="language" required>
+                    </div>
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="" disabled selected>Select Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Publication -->
+                    <div class="mb-3">
+                        <label for="publication" class="form-label">Publication</label>
+                        <select class="form-select" id="publication" name="publication" required>
+                            <option value="" disabled selected>Select Publication</option>
+                            {% for publication in publications %}
+                            <option value="{{ publication.publication_name }}">{{ publication.publication_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Authors -->
+                    <div class="mb-3">
+                        <label for="authors" class="form-label">Authors</label>
+                        <select class="form-select" id="authors" name="authors[]" multiple required>
+                            {% for author in authors %}
+                            <option value="{{ author.author_name }}">{{ author.author_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- PDF File -->
+                    <div class="mb-3">
+                        <label for="pdf_file" class="form-label">PDF File</label>
+                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" required>
+                    </div>
+                    <!-- Cover Image -->
+                    <div class="mb-3">
+                        <label for="cover_image" class="form-label">Cover Image</label>
+                        <input type="file" class="form-control" id="cover_image" name="cover_image" required>
+                    </div>
+                    <!-- Selected Authors -->
+                  
+                    <!-- No. of Copies Actual -->
+                    <div class="mb-3">
+                        <label for="no_of_copies_actual" class="form-label">No. of Copies Actual</label>
+                        <input type="number" class="form-control" id="no_of_copies_actual" name="no_of_copies_actual" required>
+                    </div>
+                    <!-- No. of Copies Current -->
+                    <div class="mb-3">
+                        <label for="no_of_copies_current" class="form-label">No. of Copies Current</label>
+                        <input type="number" class="form-control" id="no_of_copies_current" name="no_of_copies_current" required>
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary">Add Book</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Update the selected authors list when the authors select box changes
+    $('#authors').on('change', function() {
+        var selectedAuthorsList = $('#selectedAuthorsList');
+        selectedAuthorsList.empty(); // Clear the existing list
+
+        // Iterate over the selected options and add them to the list
+        $('#authors option:selected').each(function() {
+            var authorName = $(this).text();
+            selectedAuthorsList.append('<li>' + authorName + '</li>');
+        });
+    });
+</script>

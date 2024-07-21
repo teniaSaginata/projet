@@ -1,0 +1,26 @@
+{% extends 'App_Member/base.html' %}
+{% load static %}
+
+{% block title %}Browse Author - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ author.author_name }}</h2>
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">Author: {{ author.author_name }}</p> <!-- Access author name -->
+                    <p class="card-text">Category: {{ book.genre }}</p>
+                    <p class="card-text">Publication: {{ book.publisher }}</p>
+                    <a class="btn btn-primary" href="{% url 'Book_Details' book.id %}">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

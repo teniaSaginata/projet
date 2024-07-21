@@ -1,0 +1,20 @@
+{% extends 'App_Librarian/base.html' %}
+{%load static %}
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+ {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>alert("{{ message }}")</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover;width:100%; height: 100vh;">
+       
+        <!-- Additional content specific to the home page -->
+    </div>
+
+
+ 
+{% endblock %}

@@ -1,0 +1,19 @@
+<!-- edit_user.html -->
+{% extends 'App_Librarian/base.html' %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+    <h1>Edit User</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Display existing user details for editing -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ user.Name }}" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ user.Email }}" required>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" value="{{ user.Phone }}" required>
+        <!-- Add more fields as needed -->
+        <button type="submit">Update User</button>
+    </form>
+{% endblock %}

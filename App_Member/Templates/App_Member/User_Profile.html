@@ -1,0 +1,104 @@
+<!-- manage_profile.html -->
+
+{% extends 'App_Member/base.html' %}
+{% block content %}
+ {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>alert("{{ message }}")</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% load static %}
+<style>
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.box > div { 
+
+    width: 60%;
+    
+    padding: 25px;
+    background-color: #c5c7e5;
+    border-radius: 5px;
+}
+
+.box > div label {
+    font-weight: bold;
+}
+
+</style>
+<div style="background-image: url('{% static 'images/bg2.jpg' %}'); background-size: cover; width: 100%; height:100vh;">
+<div style="padding-top:25px">
+<h2 style="text-align:center;">Manage Profile</h2>
+<div class="container" style="width:50%;padding-top:45px;background-color:#c5c7e5;" >
+    
+    <form method="POST">
+        {% csrf_token %}
+        {% for u in user %}
+          <div class="row g-3">
+        <div class="col-md-6">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="Name" name="Name" value="{{ u.Name }}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="Phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="Phone" name="Phone" value="{{ u.Phone }}" required>
+        </div>
+    </div>
+         <div class="row g-3">
+        <div class="col-md-6">            
+        	<label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="Email" name="Email" value="{{ u.Email }}" required>
+        </div>
+         <div class="col-md-6"> 
+            <label for="Username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="Username" name="Username" value="{{ u.Username }}" required>
+        </div>
+       </div>
+         <div class="row g-3">
+        <div class="col-md-12">  
+            <label for="Address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="Address" name="Address" value="{{ u.Address }}" required>
+        </div>
+    </div>
+     <div class="row g-3">
+        <div class="col-md-4">  
+            <label for="City" class="form-label">City</label>
+            <input type="text" class="form-control" id="City" name="City" value="{{ u.City }}">
+        </div>
+        <div class="col-md-4">  
+            <label for="State" class="form-label">State</label>
+            <input type="text" class="form-control" id="State" name="State" value="{{ u.State }}">
+        </div>
+        <div class="col-md-4">  
+            <label for="Country" class="form-label">Country</label>
+            <input type="text" class="form-control" id="Country" name="Country" value="{{ u.Country }}">
+        </div>
+    </div>
+
+        <div class="row g-3">
+        <div class="col-md-6"> 
+            <label for="DateOfBirth" class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" id="DateOfBirth" name="DateOfBirth" value="{{ u.DateOfBirth|date:'Y-m-d' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="Gender" class="form-label">Gender</label>
+            <select class="form-select" id="Gender" name="Gender" required>
+                <option value="male" {% if u.Gender == 'male' %} selected {% endif %}>Male</option>
+                <option value="female" {% if u.Gender == 'female' %} selected {% endif %}>Female</option>
+                <option value="other" {% if u.Gender == 'other' %} selected {% endif %}>Other</option>
+            </select>
+        </div>
+        {% endfor %}
+        <button type="submit" style="text-align:center;" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
